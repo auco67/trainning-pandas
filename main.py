@@ -4,7 +4,7 @@ import plotly.express as px
 
 def main():
     df = px.data.gapminder()
-    print(df.sample(100))
+    print(df.info())
 
 if __name__ == "__main__":
     main()

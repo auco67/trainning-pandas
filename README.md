@@ -2,7 +2,7 @@
 - pandasの使い方を学ぶ
 - Pythonのデータ可視化ライブラリであるPlotly（プロットリー）を用いてデータ抽出を行う
 
-## データ抽出
+## データ
 
 使用するデータは、Plotlyに最初から用意されている練習・デモ用の有名なデータセットgapminderを利用する
 
@@ -37,6 +37,72 @@ if __name__ == "__main__":
 
 [1704 rows x 8 columns]
 ```
+
+### データ型
+
+- `df.dtypes`：データフレームの型を確認する
+
+    main.py
+    ```
+    import pandas as pd
+    import numpy as np
+    import plotly.express as px
+
+    def main():
+        df = px.data.gapminder()
+        print(df.dtypes)
+
+    if __name__ == "__main__":
+        main()
+    ```
+
+    `main.py`実行結果
+    ```
+    continent        str
+    year           int64
+    lifeExp      float64
+    pop            int64
+    gdpPercap    float64
+    iso_alpha        str
+    iso_num        int64
+    dtype: object
+    ```
+
+- `df.info()`：データフレーム情報を確認する
+
+    main.py
+    ```
+    import pandas as pd
+    import numpy as np
+    import plotly.express as px
+
+    def main():
+        df = px.data.gapminder()
+        print(df.info())
+
+    if __name__ == "__main__":
+        main()
+    ```
+
+    `main.py`実行結果
+    ```
+    <class 'pandas.DataFrame'>
+    RangeIndex: 1704 entries, 0 to 1703
+    Data columns (total 8 columns):
+    #   Column     Non-Null Count  Dtype  
+    ---  ------     --------------  -----  
+    0   country    1704 non-null   str    
+    1   continent  1704 non-null   str    
+    2   year       1704 non-null   int64  
+    3   lifeExp    1704 non-null   float64
+    4   pop        1704 non-null   int64  
+    5   gdpPercap  1704 non-null   float64
+    6   iso_alpha  1704 non-null   str    
+    7   iso_num    1704 non-null   int64  
+    dtypes: float64(2), int64(3), str(3)
+    memory usage: 106.6 KB
+    None
+    ```
 
 ### 列の抽出
 
