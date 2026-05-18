@@ -605,3 +605,182 @@ if __name__ == "__main__":
     75%    1993.25000    70.845500  1.958522e+07    9325.462346   638.000000
     max    2007.00000    82.603000  1.318683e+09  113523.132900   894.000000
     ```
+
+### データフレームの複製
+
+`df.copy()`：データフレームを複製し、元のデータフレームを残しておきたい場合
+
+main.py
+```
+import pandas as pd
+import numpy as np
+import plotly.express as px
+
+def main():
+    df = px.data.gapminder()
+    df_copy = df.copy()
+    print(df_copy)
+
+if __name__ == "__main__":
+    main()
+```
+
+`main.py`実行結果
+```
+          country continent  year  lifeExp       pop   gdpPercap iso_alpha  iso_num
+0     Afghanistan      Asia  1952   28.801   8425333  779.445314       AFG        4
+1     Afghanistan      Asia  1957   30.332   9240934  820.853030       AFG        4
+2     Afghanistan      Asia  1962   31.997  10267083  853.100710       AFG        4
+3     Afghanistan      Asia  1967   34.020  11537966  836.197138       AFG        4
+4     Afghanistan      Asia  1972   36.088  13079460  739.981106       AFG        4
+...           ...       ...   ...      ...       ...         ...       ...      ...
+1699     Zimbabwe    Africa  1987   62.351   9216418  706.157306       ZWE      716
+1700     Zimbabwe    Africa  1992   60.377  10704340  693.420786       ZWE      716
+1701     Zimbabwe    Africa  1997   46.809  11404948  792.449960       ZWE      716
+1702     Zimbabwe    Africa  2002   39.989  11926563  672.038623       ZWE      716
+1703     Zimbabwe    Africa  2007   43.487  12311143  469.709298       ZWE      716
+
+[1704 rows x 8 columns]
+```
+
+### データの生成・削除
+
+- `df[new_colum_name] = new_value`：データフレームに新しくカラム（flag）を作成する
+
+    main.py
+    ```
+    import pandas as pd
+    import numpy as np
+    import plotly.express as px
+
+    def main():
+        df = px.data.gapminder()
+        df_copy = df.copy()
+        df_copy["flag"] = False
+        print(df_copy.head())
+        print(df_copy.dtypes)
+
+
+    if __name__ == "__main__":
+        main()
+    ```
+
+    `main.py`実行結果
+    ```
+        country continent  year  lifeExp       pop   gdpPercap iso_alpha  iso_num   flag
+    0  Afghanistan      Asia  1952   28.801   8425333  779.445314       AFG        4  False
+    1  Afghanistan      Asia  1957   30.332   9240934  820.853030       AFG        4  False
+    2  Afghanistan      Asia  1962   31.997  10267083  853.100710       AFG        4  False
+    3  Afghanistan      Asia  1967   34.020  11537966  836.197138       AFG        4  False
+    4  Afghanistan      Asia  1972   36.088  13079460  739.981106       AFG        4  False
+    country          str
+    continent        str
+    year           int64
+    lifeExp      float64
+    pop            int64
+    gdpPercap    float64
+    iso_alpha        str
+    iso_num        int64
+    flag            bool
+    dtype: object
+    ```
+
+- `df_copy.drop(column_name, axis=1, inplace=True)`：データフレームのカラム（flag）を削除する
+
+    main.py
+    ```
+    import pandas as pd
+    import numpy as np
+    import plotly.express as px
+
+    def main():
+        df = px.data.gapminder()
+        df_copy = df.copy()
+        df_copy["flag"] = False
+        print(df_copy.head())
+        df_copy.drop("flag", axis=1, inplace=True)
+        print(df_copy.head())
+
+    if __name__ == "__main__":
+        main()
+    ```
+
+    `main.py`実行結果
+    ```
+        country continent  year  lifeExp       pop   gdpPercap iso_alpha  iso_num   flag
+    0  Afghanistan      Asia  1952   28.801   8425333  779.445314       AFG        4  False
+    1  Afghanistan      Asia  1957   30.332   9240934  820.853030       AFG        4  False
+    2  Afghanistan      Asia  1962   31.997  10267083  853.100710       AFG        4  False
+    3  Afghanistan      Asia  1967   34.020  11537966  836.197138       AFG        4  False
+    4  Afghanistan      Asia  1972   36.088  13079460  739.981106       AFG        4  False
+        country continent  year  lifeExp       pop   gdpPercap iso_alpha  iso_num
+    0  Afghanistan      Asia  1952   28.801   8425333  779.445314       AFG        4
+    1  Afghanistan      Asia  1957   30.332   9240934  820.853030       AFG        4
+    2  Afghanistan      Asia  1962   31.997  10267083  853.100710       AFG        4
+    3  Afghanistan      Asia  1967   34.020  11537966  836.197138       AFG        4
+    4  Afghanistan      Asia  1972   36.088  13079460  739.981106       AFG        4
+    ```
+
+- `df_copy.loc[add_row,:] = pd.NA`：データフレームに新しく行を追加する
+
+    main.py
+    ```
+    import pandas as pd
+    import numpy as np
+    import plotly.express as px
+
+    def main():
+        df = px.data.gapminder()
+        df_copy = df.copy()
+        df_copy.loc[1704,:] = pd.NA
+        print(df_copy.tail())
+
+    if __name__ == "__main__":
+        main()
+    ```
+
+    `main.py`実行結果
+    ```
+           country continent    year  lifeExp         pop   gdpPercap iso_alpha  iso_num
+    1700  Zimbabwe    Africa  1992.0   60.377  10704340.0  693.420786       ZWE    716.0
+    1701  Zimbabwe    Africa  1997.0   46.809  11404948.0  792.449960       ZWE    716.0
+    1702  Zimbabwe    Africa  2002.0   39.989  11926563.0  672.038623       ZWE    716.0
+    1703  Zimbabwe    Africa  2007.0   43.487  12311143.0  469.709298       ZWE    716.0
+    1704       NaN       NaN     NaN      NaN         NaN         NaN       NaN      NaN
+    ```
+
+- `df.drop(row_num, axis=0, inplace=True)`：データフレームの行を削除する
+
+    main.py
+    ```
+    import pandas as pd
+    import numpy as np
+    import plotly.express as px
+
+    def main():
+        df = px.data.gapminder()
+        df_copy = df.copy()
+        df_copy.loc[1704,:] = pd.NA
+        print(df_copy.tail())
+        df_copy.drop(1704, axis=0, inplace=True)
+        print(df_copy.tail())
+
+    if __name__ == "__main__":
+        main()
+    ```
+
+    `main.py`実行結果
+    ```
+        country continent    year  lifeExp         pop   gdpPercap iso_alpha  iso_num
+    1700  Zimbabwe    Africa  1992.0   60.377  10704340.0  693.420786       ZWE    716.0
+    1701  Zimbabwe    Africa  1997.0   46.809  11404948.0  792.449960       ZWE    716.0
+    1702  Zimbabwe    Africa  2002.0   39.989  11926563.0  672.038623       ZWE    716.0
+    1703  Zimbabwe    Africa  2007.0   43.487  12311143.0  469.709298       ZWE    716.0
+    1704       NaN       NaN     NaN      NaN         NaN         NaN       NaN      NaN
+        country continent    year  lifeExp         pop   gdpPercap iso_alpha  iso_num
+    1699  Zimbabwe    Africa  1987.0   62.351   9216418.0  706.157306       ZWE    716.0
+    1700  Zimbabwe    Africa  1992.0   60.377  10704340.0  693.420786       ZWE    716.0
+    1701  Zimbabwe    Africa  1997.0   46.809  11404948.0  792.449960       ZWE    716.0
+    1702  Zimbabwe    Africa  2002.0   39.989  11926563.0  672.038623       ZWE    716.0
+    1703  Zimbabwe    Africa  2007.0   43.487  12311143.0  469.709298       ZWE    716.0
+    ```
