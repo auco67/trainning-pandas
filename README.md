@@ -104,9 +104,44 @@ if __name__ == "__main__":
     None
     ```
 
+### 型変換
+
+- `year`の`int`を`str`に変換する
+
+    main.py
+    ```
+    import pandas as pd
+    import numpy as np
+    import plotly.express as px
+
+    def main():
+        df = px.data.gapminder()
+        df["year"] = df["year"].astype(str)
+        print(df["year"])
+
+    if __name__ == "__main__":
+        main()
+    ```
+
+    `main.py`実行結果
+    ```
+    0       1952
+    1       1957
+    2       1962
+    3       1967
+    4       1972
+            ... 
+    1699    1987
+    1700    1992
+    1701    1997
+    1702    2002
+    1703    2007
+    Name: year, Length: 1704, dtype: str
+    ```
+
 ### 列の抽出
 
-1. `df[column_name]`：カラム名lifeExpから一列抽出する
+- `df[column_name]`：カラム名lifeExpから一列抽出する
 
     main.py
     ```
@@ -138,7 +173,7 @@ if __name__ == "__main__":
     Name: lifeExp, Length: 1704, dtype: float64
     ```
 
-2. `df.loc[:, column_name]`：カラム名lifeExpから一列抽出する
+- `df.loc[:, column_name]`：カラム名lifeExpから一列抽出する
 
     main.py
     ```
@@ -154,7 +189,7 @@ if __name__ == "__main__":
         main()
     ```
 
-3. `df.iloc[:, column_num]`：カラム番号から一列抽出する
+- `df.iloc[:, column_num]`：カラム番号から一列抽出する
 
     main.py
     ```
@@ -188,7 +223,7 @@ if __name__ == "__main__":
 
 ### 列行の抽出
 
-1. `df.loc[:, [column_name]]`：リスト型のカラム名から複数列抽出する
+- `df.loc[:, [column_name]]`：リスト型のカラム名から複数列抽出する
 
     main.py
     ```
@@ -222,7 +257,7 @@ if __name__ == "__main__":
     [1704 rows x 2 columns]
     ```
 
-2. `df.iloc[:, [column_num]]`：List型のカラム番号から複数列抽出する
+- `df.iloc[:, [column_num]]`：List型のカラム番号から複数列抽出する
 
     main.py
     ```
@@ -255,7 +290,7 @@ if __name__ == "__main__":
     [1704 rows x 2 columns]
     ```
 
-3. `df.iloc[:, start_column_num:end_column_num]`：開始カラム番号、終了カラム番号から複数列抽出する
+- `df.iloc[:, start_column_num:end_column_num]`：開始カラム番号、終了カラム番号から複数列抽出する
 
     main.py
     ```
@@ -288,7 +323,7 @@ if __name__ == "__main__":
     [1704 rows x 2 columns]
     ```
 
-4. `df.loc[start_row:end_row, [column_name]]`：リスト型のカラム名から複数列１行から１０行までを抽出する
+- `df.loc[start_row:end_row, [column_name]]`：リスト型のカラム名から複数列１行から１０行までを抽出する
 
     main.py
     ```
@@ -483,6 +518,90 @@ if __name__ == "__main__":
     (venv) PS C:\Users\use
     ```
 
+- 特定の型を抽出する
 
+    object型のデータのみ抽出する場合
 
+    main.py
+    ```
+    import pandas as pd
+    import numpy as np
+    import plotly.express as px
 
+    def main():
+        df = px.data.gapminder()
+        print(df.select_dtypes(include="object"))
+
+    if __name__ == "__main__":
+        main()
+    ```
+
+    `main.py`実行結果
+    ```
+              country continent iso_alpha
+    0     Afghanistan      Asia       AFG
+    1     Afghanistan      Asia       AFG
+    2     Afghanistan      Asia       AFG
+    3     Afghanistan      Asia       AFG
+    4     Afghanistan      Asia       AFG
+    ...           ...       ...       ...
+    1699     Zimbabwe    Africa       ZWE
+    1700     Zimbabwe    Africa       ZWE
+    1701     Zimbabwe    Africa       ZWE
+    1702     Zimbabwe    Africa       ZWE
+    1703     Zimbabwe    Africa       ZWE
+
+    [1704 rows x 3 columns]
+    ```
+
+- 特定の型のカラム名を抽出する
+
+    int型のデータのみのカラム名を抽出する場合
+    
+    main.py
+    ```
+    import pandas as pd
+    import numpy as np
+    import plotly.express as px
+
+    def main():
+        df = px.data.gapminder()
+        print(df.select_dtypes(int).columns)
+
+    if __name__ == "__main__":
+        main()
+    ```
+
+    `main.py`実行結果
+    ```
+    Index(['year', 'pop', 'iso_num'], dtype='str')
+    ```
+
+- `df.describe()`：数値型のカラムに対して合計値などを返す
+
+    main.py
+    ```
+    import pandas as pd
+    import numpy as np
+    import plotly.express as px
+
+    def main():
+        df = px.data.gapminder()
+        print(df.describe())
+
+    if __name__ == "__main__":
+        main()
+    ```
+
+    `main.py`実行結果
+    ```
+                 year      lifeExp           pop      gdpPercap      iso_num
+    count  1704.00000  1704.000000  1.704000e+03    1704.000000  1704.000000
+    mean   1979.50000    59.474439  2.960121e+07    7215.327081   425.880282
+    std      17.26533    12.917107  1.061579e+08    9857.454543   248.305709
+    min    1952.00000    23.599000  6.001100e+04     241.165876     4.000000
+    25%    1965.75000    48.198000  2.793664e+06    1202.060309   208.000000
+    50%    1979.50000    60.712500  7.023596e+06    3531.846989   410.000000
+    75%    1993.25000    70.845500  1.958522e+07    9325.462346   638.000000
+    max    2007.00000    82.603000  1.318683e+09  113523.132900   894.000000
+    ```
