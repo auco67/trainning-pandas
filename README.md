@@ -784,3 +784,155 @@ if __name__ == "__main__":
     1702  Zimbabwe    Africa  2002.0   39.989  11926563.0  672.038623       ZWE    716.0
     1703  Zimbabwe    Africa  2007.0   43.487  12311143.0  469.709298       ZWE    716.0
     ```
+
+### データのカウント・並び替え
+
+- `df.unique(column_name)`：カラム内のユニークなデータを抜きだす
+
+    main.py
+    ```
+    import pandas as pd
+    import numpy as np
+    import plotly.express as px
+
+    def main():
+        df = px.data.gapminder()
+        print(df["country"].unique())
+
+
+    if __name__ == "__main__":
+        main()
+    ```
+
+    `main.py`実行結果
+    ```
+    <StringArray>
+    [       'Afghanistan',            'Albania',            'Algeria',
+                'Angola',          'Argentina',          'Australia',
+                'Austria',            'Bahrain',         'Bangladesh',
+                'Belgium',
+    ...
+                'Uganda',     'United Kingdom',      'United States',
+                'Uruguay',          'Venezuela',            'Vietnam',
+    'West Bank and Gaza',        'Yemen, Rep.',             'Zambia',
+            'Zimbabwe']
+    Length: 142, dtype: str
+    ```
+
+- `df.nunique(column_name)`：カラム内のユニークなデータを数を調べる
+
+    main.py
+    ```
+    import pandas as pd
+    import numpy as np
+    import plotly.express as px
+
+    def main():
+        df = px.data.gapminder()
+        print(df["country"].nunique())
+
+
+    if __name__ == "__main__":
+        main()
+    ```
+
+    `main.py`実行結果
+    ```
+    142
+    ```
+
+- `df[column_name].value_counts()`：カラムデータの登場回数を調べる
+
+    main.py
+    ```
+    import pandas as pd
+    import numpy as np
+    import plotly.express as px
+
+    def main():
+        df = px.data.gapminder()
+        print(df["continent"].value_counts())
+
+
+    if __name__ == "__main__":
+        main()
+    ```
+
+    `main.py`実行結果
+    ```
+    continent
+    Africa      624
+    Asia        396
+    Europe      360
+    Americas    300
+    Oceania      24
+    Name: count, dtype: int64
+    ```
+
+- `df.sort_values(by=column_name, ascending=False)`：特定のカラムを降順に並び替える
+
+    main.py
+    ```
+    import pandas as pd
+    import numpy as np
+    import plotly.express as px
+
+    def main():
+        df = px.data.gapminder()
+        print(df.sort_values("year", ascending=False))
+
+    if __name__ == "__main__":
+        main()
+    ```
+
+    `main.py`実行結果
+    ```
+                     country continent  year  lifeExp        pop     gdpPercap iso_alpha  iso_num
+    1679         Yemen, Rep.      Asia  2007   62.698   22211743   2280.769906       YEM      887
+    35               Algeria    Africa  2007   72.301   33333216   6223.367465       DZA       12
+    1139             Nigeria    Africa  2007   46.859  135031164   2013.977305       NGA      566
+    1127               Niger    Africa  2007   56.867   12894865    619.676892       NER      562
+    575              Germany    Europe  2007   79.406   82400996  32170.374420       DEU      276
+    ...                  ...       ...   ...      ...        ...           ...       ...      ...
+    828     Korea, Dem. Rep.      Asia  1952   50.056    8865488   1088.277758       KOR      410
+    48             Argentina  Americas  1952   62.485   17876956   5911.315053       ARG       32
+    1656  West Bank and Gaza      Asia  1952   43.160    1030585   1515.592329       PSE      275
+    24               Algeria    Africa  1952   43.077    9279525   2449.008185       DZA       12
+    0            Afghanistan      Asia  1952   28.801    8425333    779.445314       AFG        4
+
+    [1704 rows x 8 columns]
+    ```
+
+- `df.sort_values(by=[column_name], ascending=False)`：複数条件のカラムを降順に並び替える
+
+    main.py
+    ```
+    import pandas as pd
+    import numpy as np
+    import plotly.express as px
+
+    def main():
+        df = px.data.gapminder()
+        print(df.sort_values(["year","lifeExp"], ascending=False))
+
+    if __name__ == "__main__":
+        main()
+    ```
+
+    `main.py`実行結果
+    ```
+                   country continent  year  lifeExp        pop     gdpPercap iso_alpha  iso_num
+    803              Japan      Asia  2007   82.603  127467972  31656.068060       JPN      392
+    671   Hong Kong, China      Asia  2007   82.208    6980412  39724.978670       HKG      344
+    695            Iceland    Europe  2007   81.757     301931  36180.789190       ISL      352
+    1487       Switzerland    Europe  2007   81.701    7554661  37506.419070       CHE      756
+    71           Australia   Oceania  2007   81.235   20434176  34435.367440       AUS       36
+    ...                ...       ...   ...      ...        ...           ...       ...      ...
+    1032        Mozambique    Africa  1952   31.286    6446316    468.526038       MOZ      508
+    1344      Sierra Leone    Africa  1952   30.331    2143249    879.787736       SLE      694
+    36              Angola    Africa  1952   30.015    4232095   3520.610273       AGO       24
+    552             Gambia    Africa  1952   30.000     284320    485.230659       GMB      270
+    0          Afghanistan      Asia  1952   28.801    8425333    779.445314       AFG        4
+
+    [1704 rows x 8 columns]
+    ```
