@@ -4,7 +4,7 @@ import plotly.express as px
 
 def main():
     df = px.data.gapminder()
-    print(df["lifeExp"].quantile(0.90))
+    print(df[df["continent"].str.contains("A")])
 
 if __name__ == "__main__":
     main()

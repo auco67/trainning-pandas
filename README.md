@@ -13,6 +13,7 @@
 1. [データの生成・削除](#08)
 1. [データのカウント・並び替え](#09)
 1. [演算・統計量の計算](#10)
+1. [条件による抽出](#11)
 
 <a id="01"></a>
 
@@ -1130,3 +1131,184 @@ if __name__ == "__main__":
     ```
     75.097
     ```
+
+<a id="11"></a>
+
+## 条件による抽出
+
+- `df[df[column_name]==value]`：特定のカラムを特定の値で抽出する
+
+    main.py
+    ```
+    import pandas as pd
+    import numpy as np
+    import plotly.express as px
+
+    def main():
+        df = px.data.gapminder()
+        print(df[df["year"]==1952])
+
+    if __name__ == "__main__":
+        main()
+    ```
+
+    `main.py`実行結果
+    ```
+                     country continent  year  lifeExp       pop    gdpPercap iso_alpha  iso_num
+    0            Afghanistan      Asia  1952   28.801   8425333   779.445314       AFG        4
+    12               Albania    Europe  1952   55.230   1282697  1601.056136       ALB        8
+    24               Algeria    Africa  1952   43.077   9279525  2449.008185       DZA       12
+    36                Angola    Africa  1952   30.015   4232095  3520.610273       AGO       24
+    48             Argentina  Americas  1952   62.485  17876956  5911.315053       ARG       32
+    ...                  ...       ...   ...      ...       ...          ...       ...      ...
+    1644             Vietnam      Asia  1952   40.412  26246839   605.066492       VNM      704
+    1656  West Bank and Gaza      Asia  1952   43.160   1030585  1515.592329       PSE      275
+    1668         Yemen, Rep.      Asia  1952   32.548   4963829   781.717576       YEM      887
+    1680              Zambia    Africa  1952   42.038   2672000  1147.388831       ZMB      894
+    1692            Zimbabwe    Africa  1952   48.451   3080907   406.884115       ZWE      716
+
+    [142 rows x 8 columns]
+    ```
+
+- `df[column_name].isin[column_name_values]`：特定のカラムの特定の値群を抽出する
+
+    main.py
+    ```
+    import pandas as pd
+    import numpy as np
+    import plotly.express as px
+
+    def main():
+        df = px.data.gapminder()
+        target_contients = ["Asia", "Europe","Africa"]
+        print(df[df["continent"].isin(target_contients)])
+    if __name__ == "__main__":
+        main()
+    ```
+
+    `main.py`実行結果
+    ```
+              country continent  year  lifeExp       pop   gdpPercap iso_alpha  iso_num
+    0     Afghanistan      Asia  1952   28.801   8425333  779.445314       AFG        4
+    1     Afghanistan      Asia  1957   30.332   9240934  820.853030       AFG        4
+    2     Afghanistan      Asia  1962   31.997  10267083  853.100710       AFG        4
+    3     Afghanistan      Asia  1967   34.020  11537966  836.197138       AFG        4
+    4     Afghanistan      Asia  1972   36.088  13079460  739.981106       AFG        4
+    ...           ...       ...   ...      ...       ...         ...       ...      ...
+    1699     Zimbabwe    Africa  1987   62.351   9216418  706.157306       ZWE      716
+    1700     Zimbabwe    Africa  1992   60.377  10704340  693.420786       ZWE      716
+    1701     Zimbabwe    Africa  1997   46.809  11404948  792.449960       ZWE      716
+    1702     Zimbabwe    Africa  2002   39.989  11926563  672.038623       ZWE      716
+    1703     Zimbabwe    Africa  2007   43.487  12311143  469.709298       ZWE      716
+
+    [1380 rows x 8 columns]
+    ```
+
+- `df[column_name].str.contain(char)`：str型のカラムの特定の文字を含むデータを抽出する
+
+    main.py
+    ```
+    import pandas as pd
+    import numpy as np
+    import plotly.express as px
+
+    def main():
+        df = px.data.gapminder()
+        print(df[df["continent"].str.contains("A")])
+    if __name__ == "__main__":
+        main()
+    ```
+
+    `main.py`実行結果
+    ```
+              country continent  year  lifeExp       pop   gdpPercap iso_alpha  iso_num
+    0     Afghanistan      Asia  1952   28.801   8425333  779.445314       AFG        4
+    1     Afghanistan      Asia  1957   30.332   9240934  820.853030       AFG        4
+    2     Afghanistan      Asia  1962   31.997  10267083  853.100710       AFG        4
+    3     Afghanistan      Asia  1967   34.020  11537966  836.197138       AFG        4
+    4     Afghanistan      Asia  1972   36.088  13079460  739.981106       AFG        4
+    ...           ...       ...   ...      ...       ...         ...       ...      ...
+    1699     Zimbabwe    Africa  1987   62.351   9216418  706.157306       ZWE      716
+    1700     Zimbabwe    Africa  1992   60.377  10704340  693.420786       ZWE      716
+    1701     Zimbabwe    Africa  1997   46.809  11404948  792.449960       ZWE      716
+    1702     Zimbabwe    Africa  2002   39.989  11926563  672.038623       ZWE      716
+    1703     Zimbabwe    Africa  2007   43.487  12311143  469.709298       ZWE      716
+
+    [1320 rows x 8 columns]
+    ```
+
+- 複雑な条件による抽出
+
+    `gdpPercap`の中央値より高い`gdpPercap`であり、`year`が`2000`以降の場合のデータを抽出する場合
+
+    main.py
+    ```
+    import pandas as pd
+    import numpy as np
+    import plotly.express as px
+
+    def main():
+        df = px.data.gapminder()
+        gdp_per_cap_med = df["gdpPercap"].median()
+        print(f"gdpPercap_median={gdp_per_cap_med}")
+        cond1 = df["gdpPercap"] > gdp_per_cap_med
+        cond2 = df["year"] >= 2000
+        print(df[cond1 & cond2])
+
+    if __name__ == "__main__":
+        main()
+    ```
+
+    `main.py`実行結果
+    ```
+    gdpPercap_median=3531.8469885000004
+                     country continent  year  lifeExp       pop     gdpPercap iso_alpha  iso_num
+    22               Albania    Europe  2002   75.651   3508512   4604.211737       ALB        8
+    23               Albania    Europe  2007   76.423   3600523   5937.029526       ALB        8
+    34               Algeria    Africa  2002   70.994  31287142   5288.040382       DZA       12
+    35               Algeria    Africa  2007   72.301  33333216   6223.367465       DZA       12
+    47                Angola    Africa  2007   42.731  12420476   4797.231267       AGO       24
+    ...                  ...       ...   ...      ...       ...           ...       ...      ...
+    1630             Uruguay  Americas  2002   75.307   3363085   7727.002004       URY      858
+    1631             Uruguay  Americas  2007   76.384   3447496  10611.462990       URY      858
+    1642           Venezuela  Americas  2002   72.766  24287670   8605.047831       VEN      862
+    1643           Venezuela  Americas  2007   73.747  26084662  11415.805690       VEN      862
+    1666  West Bank and Gaza      Asia  2002   72.370   3389578   4515.487575       PSE      275
+
+    [173 rows x 8 columns]
+    ```
+
+- `df.query(conditions)`：query関数を使って複雑な条件でデータを抽出する
+
+    main.py
+    ```
+    import pandas as pd
+    import numpy as np
+    import plotly.express as px
+
+    def main():
+        df = px.data.gapminder()
+        print(df.query('(year >= 2000) & (continent in ["Asia", "Europe","Africa"])'))
+
+    if __name__ == "__main__":
+        main()
+    ```
+
+    `main.py`実行結果
+    ```
+              country continent  year  lifeExp       pop    gdpPercap iso_alpha  iso_num
+    10    Afghanistan      Asia  2002   42.129  25268405   726.734055       AFG        4
+    11    Afghanistan      Asia  2007   43.828  31889923   974.580338       AFG        4
+    22        Albania    Europe  2002   75.651   3508512  4604.211737       ALB        8
+    23        Albania    Europe  2007   76.423   3600523  5937.029526       ALB        8
+    34        Algeria    Africa  2002   70.994  31287142  5288.040382       DZA       12
+    ...           ...       ...   ...      ...       ...          ...       ...      ...
+    1679  Yemen, Rep.      Asia  2007   62.698  22211743  2280.769906       YEM      887
+    1690       Zambia    Africa  2002   39.193  10595811  1071.613938       ZMB      894
+    1691       Zambia    Africa  2007   42.384  11746035  1271.211593       ZMB      894
+    1702     Zimbabwe    Africa  2002   39.989  11926563   672.038623       ZWE      716
+    1703     Zimbabwe    Africa  2007   43.487  12311143   469.709298       ZWE      716
+
+    [230 rows x 8 columns]
+    ```
+
