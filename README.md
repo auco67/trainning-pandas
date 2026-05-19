@@ -2,7 +2,21 @@
 - pandasの使い方を学ぶ
 - Pythonのデータ可視化ライブラリであるPlotly（プロットリー）を用いてデータ抽出を行う
 
-## データ
+## 目次
+1. [使用するデータ](#01)
+1. [データ型](#02)
+1. [型変換](#03)
+1. [列の抽出](#04)
+1. [列行の抽出](#05)
+1. [その他の抽出](#06)
+1. [データフレームの複製](#07)
+1. [データの生成・削除](#08)
+1. [データのカウント・並び替え](#09)
+1. [演算・統計量の計算](#10)
+
+<a id="01"></a>
+
+## 使用するデータ
 
 使用するデータは、Plotlyに最初から用意されている練習・デモ用の有名なデータセットgapminderを利用する
 
@@ -37,6 +51,8 @@ if __name__ == "__main__":
 
 [1704 rows x 8 columns]
 ```
+
+<a id="02"></a>
 
 ### データ型
 
@@ -104,9 +120,11 @@ if __name__ == "__main__":
     None
     ```
 
+<a id="03"></a>
+
 ### 型変換
 
-- `year`の`int`を`str`に変換する
+- `df[column_name].astype(type)`：`year`の`int`を`str`に変換する
 
     main.py
     ```
@@ -138,6 +156,8 @@ if __name__ == "__main__":
     1703    2007
     Name: year, Length: 1704, dtype: str
     ```
+
+<a id="04"></a>
 
 ### 列の抽出
 
@@ -220,6 +240,8 @@ if __name__ == "__main__":
     1703    43.487
     Name: lifeExp, Length: 1704, dtype: float64
     ```
+
+<a id="05"></a>
 
 ### 列行の抽出
 
@@ -353,6 +375,8 @@ if __name__ == "__main__":
     8   41.674  16317921
     9   41.763  22227415
     ```
+
+<a id="06"></a>
 
 ### その他の抽出
 
@@ -520,7 +544,7 @@ if __name__ == "__main__":
 
 - 特定の型を抽出する
 
-    object型のデータのみ抽出する場合
+    `df.select_dtypes(include=type)`：object型のデータのみ抽出する場合
 
     main.py
     ```
@@ -554,7 +578,7 @@ if __name__ == "__main__":
     [1704 rows x 3 columns]
     ```
 
-- 特定の型のカラム名を抽出する
+- `df.select_dtypes(type).columns`：特定の型のカラム名を抽出する
 
     int型のデータのみのカラム名を抽出する場合
     
@@ -606,6 +630,8 @@ if __name__ == "__main__":
     max    2007.00000    82.603000  1.318683e+09  113523.132900   894.000000
     ```
 
+<a id="07"></a>
+
 ### データフレームの複製
 
 `df.copy()`：データフレームを複製し、元のデータフレームを残しておきたい場合
@@ -642,6 +668,8 @@ if __name__ == "__main__":
 
 [1704 rows x 8 columns]
 ```
+
+<a id="08"></a>
 
 ### データの生成・削除
 
@@ -721,7 +749,7 @@ if __name__ == "__main__":
     4  Afghanistan      Asia  1972   36.088  13079460  739.981106       AFG        4
     ```
 
-- `df_copy.loc[add_row,:] = pd.NA`：データフレームに新しく行を追加する
+- `df_copy.loc[add_row,:] = value`：データフレームに新しく行を追加する
 
     main.py
     ```
@@ -784,6 +812,8 @@ if __name__ == "__main__":
     1702  Zimbabwe    Africa  2002.0   39.989  11926563.0  672.038623       ZWE    716.0
     1703  Zimbabwe    Africa  2007.0   43.487  12311143.0  469.709298       ZWE    716.0
     ```
+
+<a id="09"></a>
 
 ### データのカウント・並び替え
 
@@ -935,4 +965,168 @@ if __name__ == "__main__":
     0          Afghanistan      Asia  1952   28.801    8425333    779.445314       AFG        4
 
     [1704 rows x 8 columns]
+    ```
+
+<a id="10"></a>
+
+## 演算・統計量の計算
+
+- `df[column_name] + 3`：特定のカラムの値にプラス３する（ベクトル演算）
+
+    ※注意：ベクトル演算はリスト型には対応していないためエラーとなる
+
+    main.py
+    ```
+    import pandas as pd
+    import numpy as np
+    import plotly.express as px
+
+    def main():
+        df = px.data.gapminder()
+        print(df["lifeExp"] + 3)
+
+    if __name__ == "__main__":
+        main()
+    ```
+
+    `main.py`実行結果
+    ```
+    0       31.801
+    1       33.332
+    2       34.997  
+    3       37.020
+    4       39.088
+            ...  
+    1699    65.351
+    1700    63.377
+    1701    49.809
+    1702    42.989
+    1703    46.487
+    Name: lifeExp, Length: 1704, dtype: float64
+    ```
+
+- `df[column_name].mean()`：特定のカラムの平均値を取得する
+
+    main.py
+    ```
+    import pandas as pd
+    import numpy as np
+    import plotly.express as px
+
+    def main():
+        df = px.data.gapminder()
+        print(df["lifeExp"].mean())
+
+    if __name__ == "__main__":
+        main()
+    ```
+
+    `main.py`実行結果
+    ```
+    59.474439366197174
+    ```
+
+- `df[column_name].median()`：特定のカラムの中央値を取得する
+
+    main.py
+    ```
+    import pandas as pd
+    import numpy as np
+    import plotly.express as px
+
+    def main():
+        df = px.data.gapminder()
+        print(df["lifeExp"].median())
+
+    if __name__ == "__main__":
+        main()
+    ```
+
+    `main.py`実行結果
+    ```
+    60.7125
+    ```
+
+- `df[column_name].min()`：特定のカラムの最小値を取得する
+
+    main.py
+    ```
+    import pandas as pd
+    import numpy as np
+    import plotly.express as px
+
+    def main():
+        df = px.data.gapminder()
+        print(df["lifeExp"].min())
+
+    if __name__ == "__main__":
+        main()
+    ```
+
+    `main.py`実行結果
+    ```
+    23.599
+    ```
+
+- `df[column_name].max()`：特定のカラムの最大値を取得する
+
+    main.py
+    ```
+    import pandas as pd
+    import numpy as np
+    import plotly.express as px
+
+    def main():
+        df = px.data.gapminder()
+        print(df["lifeExp"].max())
+
+    if __name__ == "__main__":
+        main()
+    ```
+
+    `main.py`実行結果
+    ```
+    82.603
+    ```
+
+- `df[column_name].std()`：特定のカラムの標準値を取得する
+
+    main.py
+    ```
+    import pandas as pd
+    import numpy as np
+    import plotly.express as px
+
+    def main():
+        df = px.data.gapminder()
+        print(df["lifeExp"].std())
+
+    if __name__ == "__main__":
+        main()
+    ```
+
+    `main.py`実行結果
+    ```
+    12.917107415241192
+    ```
+
+- `df[column_name].quantile(float)`：特定のカラムの割合値を取得する
+
+    main.py
+    ```
+    import pandas as pd
+    import numpy as np
+    import plotly.express as px
+
+    def main():
+        df = px.data.gapminder()
+        print(df["lifeExp"].quantile(0.90))
+
+    if __name__ == "__main__":
+        main()
+    ```
+
+    `main.py`実行結果
+    ```
+    75.097
     ```
