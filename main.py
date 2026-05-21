@@ -4,7 +4,7 @@ import plotly.express as px
 
 def main():
     df = px.data.gapminder()
-    continent_grp = df.groupby("continent")
-    print(continent_grp[["pop", "gdpPercap"]].agg({"pop":"median","gdpPercap":"mean"}).reset_index())
+    pop_pivot = pd.pivot_table(df, index=["year"], columns=["continent"], values=["pop"], aggfunc="mean")
+    print(pop_pivot.divide(pop_pivot.sum(axis=1), axis=0)*100)
 if __name__ == "__main__":
     main()
