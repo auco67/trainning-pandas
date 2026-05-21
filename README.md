@@ -22,6 +22,7 @@
 1. [pivod table](#17)
 1. [ファイル読み込み](#18)
 1. [merge](#19)
+1. [concat](#20)
 
 <a id="01"></a>
 
@@ -1963,7 +1964,7 @@ if __name__ == "__main__":
 
 ## merge
 
-２つデータフレームを結合させる
+２つデータフレームをカラムのキーをもとに結合させる
 
 - `pd.merge(data_frame_1, data_frame_2, left_on=data_frame_1_column, right_on=data_frame_1_column), how="inner`：２つのデータフレーム`df`と`df_gapminder`を`Alpha-3 code`と``iso_alpha`をキーに内部結合させる
 
@@ -2001,4 +2002,46 @@ if __name__ == "__main__":
     1811     Zimbabwe    Africa  2007   43.487  12311143  ...        ZWE     716           ZWE                -20                  30
 
     [1812 rows x 11 columns]
+    ```
+
+<a id="20"></a>
+
+## concat
+
+同じカラム構成である２つデータフレームを縦方向に結合させる
+
+- `pd.concat([data_frame_1, data_frame_2])`：データフレーム１とデータフレーム２を縦方向に結合させる
+
+    main.py
+    ```
+    import pandas as pd
+    import numpy as np
+    import plotly.express as px
+
+    def main():
+        df_gapminder = px.data.gapminder()
+        df_1 = df_gapminder.iloc[:100, :]
+        df_2 = df_gapminder.iloc[100:200, :]
+        print(pd.concat([df_1, df_2]))
+
+    if __name__ == "__main__":
+        main()
+    ```
+
+    `main.py`実行結果
+    ```
+              country continent  year  lifeExp       pop   gdpPercap iso_alpha  iso_num
+    0     Afghanistan      Asia  1952   28.801   8425333  779.445314       AFG        4
+    1     Afghanistan      Asia  1957   30.332   9240934  820.853030       AFG        4
+    2     Afghanistan      Asia  1962   31.997  10267083  853.100710       AFG        4
+    3     Afghanistan      Asia  1967   34.020  11537966  836.197138       AFG        4
+    4     Afghanistan      Asia  1972   36.088  13079460  739.981106       AFG        4
+    ..            ...       ...   ...      ...       ...         ...       ...      ...
+    195  Burkina Faso    Africa  1967   40.697   5127935  794.826560       BFA      854
+    196  Burkina Faso    Africa  1972   43.591   5433886  854.735976       BFA      854
+    197  Burkina Faso    Africa  1977   46.137   5889574  743.387037       BFA      854
+    198  Burkina Faso    Africa  1982   48.122   6634596  807.198586       BFA      854
+    199  Burkina Faso    Africa  1987   49.557   7586551  912.063142       BFA      854
+
+    [200 rows x 8 columns]
     ```
