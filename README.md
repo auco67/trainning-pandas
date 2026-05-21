@@ -20,6 +20,8 @@
 1. [関数の適用](#15)
 1. [groupby](#16)
 1. [pivod table](#17)
+1. [ファイル読み込み](#18)
+1. [merge](#19)
 
 <a id="01"></a>
 
@@ -1915,4 +1917,88 @@ if __name__ == "__main__":
     1997       8.000724  17.828765  57.343199  10.607318  6.219993
     2002       8.430908  17.873854  57.393319  10.135150  6.166769
     2007       8.886520  17.874115  57.424973   9.712175  6.102217
+    ```
+
+<a id="18"></a>
+
+## ファイル読み込み
+
+- `pd.read_csv(file_path, sep=',' usecols=[1,2,3])`：CSVファイルを特定のカラムのみ読み込む
+
+    main.py
+    ```
+    import pandas as pd
+    import numpy as np
+    import plotly.express as px
+
+    def main():
+        file_path = "./dataset/countries_codes_and_coordinates.csv"
+        df = pd.read_csv(file_path, sep=",", usecols=[2,4,5])
+        for col in df.columns:
+            df[col] = df[col].apply(lambda x: x.strip()[1:-1])
+        print(df)
+    if __name__ == "__main__":
+        main()
+    ```
+
+    `main.py`実行結果
+    ```
+        Alpha-3 code Latitude (average) Longitude (average)
+    0            AFG                 33                  65
+    1            ALB                 41                  20
+    2            DZA                 28                   3
+    3            ASM           -14.3333                -170
+    4            AND               42.5                 1.6
+    ..           ...                ...                 ...
+    251          WLF              -13.3              -176.2
+    252          ESH               24.5                 -13
+    253          YEM                 15                  48
+    254          ZMB                -15                  30
+    255          ZWE                -20                  30
+
+    [256 rows x 3 columns]
+    ```
+
+<a id="19"></a>
+
+## merge
+
+２つデータフレームを結合させる
+
+- `pd.merge(data_frame_1, data_frame_2, left_on=data_frame_1_column, right_on=data_frame_1_column), how="inner`：２つのデータフレーム`df`と`df_gapminder`を`Alpha-3 code`と``iso_alpha`をキーに内部結合させる
+
+    main.py
+    ```
+    import pandas as pd
+    import numpy as np
+    import plotly.express as px
+
+    def main():
+        df_gapminder = px.data.gapminder()
+        file_path = "./dataset/countries_codes_and_coordinates.csv"
+        df = pd.read_csv(file_path, sep=",", usecols=[2,4,5])
+        for col in df.columns:
+            df[col] = df[col].apply(lambda x: x.strip()[1:-1])
+        print(pd.merge(df_gapminder, df, left_on="iso_alpha", right_on="Alpha-3 code", how="inner"))
+
+    if __name__ == "__main__":
+        main()
+    ```
+
+    `main.py`実行結果
+    ```
+            country continent  year  lifeExp       pop  ...  iso_alpha iso_num  Alpha-3 code Latitude (average) Longitude (average)
+    0     Afghanistan      Asia  1952   28.801   8425333  ...        AFG       4           AFG                 33                  65
+    1     Afghanistan      Asia  1957   30.332   9240934  ...        AFG       4           AFG                 33                  65
+    2     Afghanistan      Asia  1962   31.997  10267083  ...        AFG       4           AFG                 33                  65
+    3     Afghanistan      Asia  1967   34.020  11537966  ...        AFG       4           AFG                 33                  65
+    4     Afghanistan      Asia  1972   36.088  13079460  ...        AFG       4           AFG                 33                  65
+    ...           ...       ...   ...      ...       ...  ...        ...     ...           ...                ...                 ...
+    1807     Zimbabwe    Africa  1987   62.351   9216418  ...        ZWE     716           ZWE                -20                  30
+    1808     Zimbabwe    Africa  1992   60.377  10704340  ...        ZWE     716           ZWE                -20                  30
+    1809     Zimbabwe    Africa  1997   46.809  11404948  ...        ZWE     716           ZWE                -20                  30
+    1810     Zimbabwe    Africa  2002   39.989  11926563  ...        ZWE     716           ZWE                -20                  30
+    1811     Zimbabwe    Africa  2007   43.487  12311143  ...        ZWE     716           ZWE                -20                  30
+
+    [1812 rows x 11 columns]
     ```
