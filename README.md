@@ -15,7 +15,7 @@
 1. [演算・統計量の計算](#10)
 1. [条件による抽出](#11)
 1. [null値の処理](#12)
-
+1. [重複の処理](#13)
 
 <a id="01"></a>
 
@@ -1478,3 +1478,59 @@ if __name__ == "__main__":
     ```
 
     その他、特定のカラムがNaNであったらレコード削除する場合の`df.dropna(subset=[column_name])`や、全カラムがNaNであったらレコード削除する場合の`df.dropna(how='all)`などある
+
+<a id="13"></a>
+
+## 重複の処理
+
+- `df.drop_duplicates()`：重複のレコードが存在した場合、削除する
+
+    main.py
+    ```
+    import pandas as pd
+    import numpy as np
+    import plotly.express as px
+
+    def main():
+        df = px.data.gapminder()
+        df.loc[1704,:] = df.loc[1703,:] 
+        print(df)
+        print(df.drop_duplicates())
+    if __name__ == "__main__":
+        main()
+    ```
+
+     `main.py`実行結果
+    ```
+              country continent    year  lifeExp         pop   gdpPercap iso_alpha  iso_num
+    0     Afghanistan      Asia  1952.0   28.801   8425333.0  779.445314       AFG      4.0
+    1     Afghanistan      Asia  1957.0   30.332   9240934.0  820.853030       AFG      4.0
+    2     Afghanistan      Asia  1962.0   31.997  10267083.0  853.100710       AFG      4.0
+    3     Afghanistan      Asia  1967.0   34.020  11537966.0  836.197138       AFG      4.0
+    4     Afghanistan      Asia  1972.0   36.088  13079460.0  739.981106       AFG      4.0
+    ...           ...       ...     ...      ...         ...         ...       ...      ...
+    1700     Zimbabwe    Africa  1992.0   60.377  10704340.0  693.420786       ZWE    716.0
+    1701     Zimbabwe    Africa  1997.0   46.809  11404948.0  792.449960       ZWE    716.0
+    1702     Zimbabwe    Africa  2002.0   39.989  11926563.0  672.038623       ZWE    716.0
+    1703     Zimbabwe    Africa  2007.0   43.487  12311143.0  469.709298       ZWE    716.0
+    1704     Zimbabwe    Africa  2007.0   43.487  12311143.0  469.709298       ZWE    716.0
+
+    [1705 rows x 8 columns]
+            country continent    year  lifeExp         pop   gdpPercap iso_alpha  iso_num
+    0     Afghanistan      Asia  1952.0   28.801   8425333.0  779.445314       AFG      4.0
+    1     Afghanistan      Asia  1957.0   30.332   9240934.0  820.853030       AFG      4.0
+    2     Afghanistan      Asia  1962.0   31.997  10267083.0  853.100710       AFG      4.0
+    3     Afghanistan      Asia  1967.0   34.020  11537966.0  836.197138       AFG      4.0
+    4     Afghanistan      Asia  1972.0   36.088  13079460.0  739.981106       AFG      4.0
+    ...           ...       ...     ...      ...         ...         ...       ...      ...
+    1699     Zimbabwe    Africa  1987.0   62.351   9216418.0  706.157306       ZWE    716.0
+    1700     Zimbabwe    Africa  1992.0   60.377  10704340.0  693.420786       ZWE    716.0
+    1701     Zimbabwe    Africa  1997.0   46.809  11404948.0  792.449960       ZWE    716.0
+    1702     Zimbabwe    Africa  2002.0   39.989  11926563.0  672.038623       ZWE    716.0
+    1703     Zimbabwe    Africa  2007.0   43.487  12311143.0  469.709298       ZWE    716.0
+
+    [1704 rows x 8 columns]
+    ```
+
+    ※`df.drop_duplicates`関数に`subset`引数に`column_name`を指定すれば、その`column_name`が重複しているレコードを削除することができる
+
