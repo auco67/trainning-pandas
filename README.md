@@ -17,6 +17,7 @@
 1. [null値の処理](#12)
 1. [重複の処理](#13)
 1. [インデックス・カラムの操作](#14)
+1. [関数の適用](#15)
 
 <a id="01"></a>
 
@@ -1662,4 +1663,89 @@ if __name__ == "__main__":
 
     ※インデックスをリセットする場合は、`df.reset_index()`を使用する
 
+<a id="15"></a>
 
+## 関数の適用
+
+- `df[column_name].apply(function_name)`：関数を適用する
+
+    `pop`（人口）の中央値を算出しその中央値と比較して値が大きい場合は`greater`小さい場合は`smaller`を新しいカラム`pop_median_stats`に設定する
+
+    main.py
+    ```
+    import pandas as pd
+    import numpy as np
+    import plotly.express as px
+
+    def calc_median(df:pd.DataFrame)-> pd.DataFrame:
+        df["pop_median_status"] = pd.NA
+        pop_median = df["pop"].median()
+        
+        df["pop_median_status"] = np.where(
+            df["pop"] <= pop_median,
+            "smaller",
+            "greater"
+        )
+
+        return df
+
+    def main():
+        df = px.data.gapminder()
+        df = calc_median(df)
+        print(df)
+    if __name__ == "__main__":
+        main()
+    ```
+
+     `main.py`実行結果
+    ```
+              country continent  year  lifeExp       pop   gdpPercap iso_alpha  iso_num pop_median_status
+    0     Afghanistan      Asia  1952   28.801   8425333  779.445314       AFG        4           greater
+    1     Afghanistan      Asia  1957   30.332   9240934  820.853030       AFG        4           greater
+    2     Afghanistan      Asia  1962   31.997  10267083  853.100710       AFG        4           greater
+    3     Afghanistan      Asia  1967   34.020  11537966  836.197138       AFG        4           greater
+    4     Afghanistan      Asia  1972   36.088  13079460  739.981106       AFG        4           greater
+    ...           ...       ...   ...      ...       ...         ...       ...      ...               ...
+    1699     Zimbabwe    Africa  1987   62.351   9216418  706.157306       ZWE      716           greater
+    1700     Zimbabwe    Africa  1992   60.377  10704340  693.420786       ZWE      716           greater
+    1701     Zimbabwe    Africa  1997   46.809  11404948  792.449960       ZWE      716           greater
+    1702     Zimbabwe    Africa  2002   39.989  11926563  672.038623       ZWE      716           greater
+    1703     Zimbabwe    Africa  2007   43.487  12311143  469.709298       ZWE      716           greater
+
+    [1704 rows x 9 columns]
+    ```
+
+- `df[column_name].apply(lambda x)`：lambda関数を用いて適用する
+
+    main.py
+    ```
+    import pandas as pd
+    import numpy as np
+    import plotly.express as px
+
+    def main():
+        df = px.data.gapminder()
+        pop_median = df["pop"].median()
+        df["pop_median_status"] = df["pop"].apply(lambda x: 'greater' if x >= pop_median else 'smaller')
+        print(df)
+    if __name__ == "__main__":
+        main()
+    ```
+
+     `main.py`実行結果
+    ```
+              country continent  year  lifeExp       pop   gdpPercap iso_alpha  iso_num pop_median_status
+    0     Afghanistan      Asia  1952   28.801   8425333  779.445314       AFG        4           greater
+    1     Afghanistan      Asia  1957   30.332   9240934  820.853030       AFG        4           greater
+    2     Afghanistan      Asia  1962   31.997  10267083  853.100710       AFG        4           greater
+    3     Afghanistan      Asia  1967   34.020  11537966  836.197138       AFG        4           greater
+    4     Afghanistan      Asia  1972   36.088  13079460  739.981106       AFG        4           greater
+    ...           ...       ...   ...      ...       ...         ...       ...      ...               ...
+    1699     Zimbabwe    Africa  1987   62.351   9216418  706.157306       ZWE      716           greater
+    1700     Zimbabwe    Africa  1992   60.377  10704340  693.420786       ZWE      716           greater
+    1701     Zimbabwe    Africa  1997   46.809  11404948  792.449960       ZWE      716           greater
+    1702     Zimbabwe    Africa  2002   39.989  11926563  672.038623       ZWE      716           greater
+    1703     Zimbabwe    Africa  2007   43.487  12311143  469.709298       ZWE      716           greater
+
+    [1704 rows x 9 columns]
+    ```
