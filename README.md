@@ -18,6 +18,7 @@
 1. [重複の処理](#13)
 1. [インデックス・カラムの操作](#14)
 1. [関数の適用](#15)
+1. [groupby](#16)
 
 <a id="01"></a>
 
@@ -1748,4 +1749,94 @@ if __name__ == "__main__":
     1703     Zimbabwe    Africa  2007   43.487  12311143  469.709298       ZWE      716           greater
 
     [1704 rows x 9 columns]
+    ```
+
+<a id="16"></a>
+
+## groupby
+
+- `df.groupby(column_name).get_group(column_value)`：カラム名の特定の値でグループ集計する
+
+    main.py
+    ```
+    import pandas as pd
+    import numpy as np
+    import plotly.express as px
+
+    def main():
+        df = px.data.gapminder()
+        continent_grp = df.groupby("continent")
+        print(continent_grp.get_group("Asia"))
+    if __name__ == "__main__":
+        main()
+    ```
+
+     `main.py`実行結果
+    ```
+              country continent  year  lifeExp       pop    gdpPercap iso_alpha  iso_num
+    0     Afghanistan      Asia  1952   28.801   8425333   779.445314       AFG        4
+    1     Afghanistan      Asia  1957   30.332   9240934   820.853030       AFG        4
+    2     Afghanistan      Asia  1962   31.997  10267083   853.100710       AFG        4
+    3     Afghanistan      Asia  1967   34.020  11537966   836.197138       AFG        4
+    4     Afghanistan      Asia  1972   36.088  13079460   739.981106       AFG        4
+    ...           ...       ...   ...      ...       ...          ...       ...      ...
+    1675  Yemen, Rep.      Asia  1987   52.922  11219340  1971.741538       YEM      887
+    1676  Yemen, Rep.      Asia  1992   55.599  13367997  1879.496673       YEM      887
+    1677  Yemen, Rep.      Asia  1997   58.020  15826497  2117.484526       YEM      887
+    1678  Yemen, Rep.      Asia  2002   60.308  18701257  2234.820827       YEM      887
+    1679  Yemen, Rep.      Asia  2007   62.698  22211743  2280.769906       YEM      887
+
+    [396 rows x 8 columns]
+    ```
+
+- `df.groupby(column_name)[column_name].median().reset_index()`：特定のカラムの中央値を算出し特定のカラム名でグルーピングする
+
+    main.py
+    ```
+    import pandas as pd
+    import numpy as np
+    import plotly.express as px
+
+    def main():
+        df = px.data.gapminder()
+        continent_grp = df.groupby("continent")
+        print(continent_grp["pop"].median().reset_index())
+    if __name__ == "__main__":
+        main()
+    ```
+
+    `main.py`実行結果
+    ```
+      continent         pop
+    0    Africa   4579311.0
+    1  Americas   6227510.0
+    2      Asia  14530830.5
+    3    Europe   8551125.0
+    4   Oceania   6403491.5
+    ```
+
+- `df.groupby(column_name)[column_name_a,column_name_b].agg({column_name_a:"median", column_name_b:"mean"}).reset_index()`：あるカラムには中央値を算出し、あるカラムは平均値を算出し、特定のカラム名でグルーピングする
+
+    main.py
+    ```
+    import pandas as pd
+    import numpy as np
+    import plotly.express as px
+
+    def main():
+        df = px.data.gapminder()
+        continent_grp = df.groupby("continent")
+        print(continent_grp[["pop", "gdpPercap"]].agg({"pop":"median","gdpPercap":"mean"}).reset_index())
+    if __name__ == "__main__":
+        main()
+    ```
+
+    `main.py`実行結果
+    ```
+      continent         pop     gdpPercap
+    0    Africa   4579311.0   2193.754578
+    1  Americas   6227510.0   7136.110356
+    2      Asia  14530830.5   7902.150428
+    3    Europe   8551125.0  14469.475533
+    4   Oceania   6403491.5  18621.609223
     ```
