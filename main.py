@@ -4,9 +4,8 @@ import plotly.express as px
 
 def main():
     df = px.data.gapminder()
-    df.loc[1704,:] = df.loc[1703,:] 
     print(df)
-    print(df.drop_duplicates())
-
+    print(df.set_index("country"))
+    print(df.reset_index())
 if __name__ == "__main__":
     main()

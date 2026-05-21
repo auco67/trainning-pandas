@@ -16,6 +16,7 @@
 1. [条件による抽出](#11)
 1. [null値の処理](#12)
 1. [重複の処理](#13)
+1. [インデックス・カラムの操作](#14)
 
 <a id="01"></a>
 
@@ -1533,4 +1534,132 @@ if __name__ == "__main__":
     ```
 
     ※`df.drop_duplicates`関数に`subset`引数に`column_name`を指定すれば、その`column_name`が重複しているレコードを削除することができる
+
+<a id="14"></a>
+
+## インデックス・カラムの操作
+
+- `df.rename({ column_name: new_column_name })`：カラム名をリネームする
+
+    main.py
+    ```
+    import pandas as pd
+    import numpy as np
+    import plotly.express as px
+
+    def main():
+        df = px.data.gapminder()
+        print(df)
+        print(df.rename(columns={
+            "country":"国名",
+            "continent":"大陸",
+            "year":"西暦",
+            "lifeExp":"平均寿命",
+            "pop":"人口",
+            "depPercap":"一人当たりGDP",
+            "iso_alpha":"3文字の国コード",
+            "iso_num":"数字の国コード"
+        }))
+    if __name__ == "__main__":
+        main()
+    ```
+
+     `main.py`実行結果
+    ```
+              country continent  year  lifeExp       pop   gdpPercap iso_alpha  iso_num
+    0     Afghanistan      Asia  1952   28.801   8425333  779.445314       AFG        4
+    1     Afghanistan      Asia  1957   30.332   9240934  820.853030       AFG        4
+    2     Afghanistan      Asia  1962   31.997  10267083  853.100710       AFG        4
+    3     Afghanistan      Asia  1967   34.020  11537966  836.197138       AFG        4
+    4     Afghanistan      Asia  1972   36.088  13079460  739.981106       AFG        4
+    ...           ...       ...   ...      ...       ...         ...       ...      ...
+    1699     Zimbabwe    Africa  1987   62.351   9216418  706.157306       ZWE      716
+    1700     Zimbabwe    Africa  1992   60.377  10704340  693.420786       ZWE      716
+    1701     Zimbabwe    Africa  1997   46.809  11404948  792.449960       ZWE      716
+    1702     Zimbabwe    Africa  2002   39.989  11926563  672.038623       ZWE      716
+    1703     Zimbabwe    Africa  2007   43.487  12311143  469.709298       ZWE      716
+
+    [1704 rows x 8 columns]
+          国名      大陸    西暦    平均寿命        人口   gdpPercap 3文字の国コード  数字の国コード
+    0     Afghanistan    Asia  1952  28.801   8425333  779.445314      AFG        4
+    1     Afghanistan    Asia  1957  30.332   9240934  820.853030      AFG        4
+    2     Afghanistan    Asia  1962  31.997  10267083  853.100710      AFG        4
+    3     Afghanistan    Asia  1967  34.020  11537966  836.197138      AFG        4
+    4     Afghanistan    Asia  1972  36.088  13079460  739.981106      AFG        4
+    ...           ...     ...   ...     ...       ...         ...      ...      ...
+    1699     Zimbabwe  Africa  1987  62.351   9216418  706.157306      ZWE      716
+    1700     Zimbabwe  Africa  1992  60.377  10704340  693.420786      ZWE      716
+    1701     Zimbabwe  Africa  1997  46.809  11404948  792.449960      ZWE      716
+    1702     Zimbabwe  Africa  2002  39.989  11926563  672.038623      ZWE      716
+    1703     Zimbabwe  Africa  2007  43.487  12311143  469.709298      ZWE      716
+
+    [1704 rows x 8 columns]
+    ```
+
+- `df.set_index(column_name)`：インデックスを特定のカラムに指定する
+
+    main.py
+    ```
+    import pandas as pd
+    import numpy as np
+    import plotly.express as px
+
+    def main():
+        df = px.data.gapminder()
+        print(df)
+        print(df.set_index("country"))
+        print(df.reset_index())
+    if __name__ == "__main__":
+        main()
+    ```
+
+     `main.py`実行結果
+    ```
+              country continent  year  lifeExp       pop   gdpPercap iso_alpha  iso_num
+    0     Afghanistan      Asia  1952   28.801   8425333  779.445314       AFG        4
+    1     Afghanistan      Asia  1957   30.332   9240934  820.853030       AFG        4
+    2     Afghanistan      Asia  1962   31.997  10267083  853.100710       AFG        4
+    3     Afghanistan      Asia  1967   34.020  11537966  836.197138       AFG        4
+    4     Afghanistan      Asia  1972   36.088  13079460  739.981106       AFG        4
+    ...           ...       ...   ...      ...       ...         ...       ...      ...
+    1699     Zimbabwe    Africa  1987   62.351   9216418  706.157306       ZWE      716
+    1700     Zimbabwe    Africa  1992   60.377  10704340  693.420786       ZWE      716
+    1701     Zimbabwe    Africa  1997   46.809  11404948  792.449960       ZWE      716
+    1702     Zimbabwe    Africa  2002   39.989  11926563  672.038623       ZWE      716
+    1703     Zimbabwe    Africa  2007   43.487  12311143  469.709298       ZWE      716
+
+    [1704 rows x 8 columns]
+                continent  year  lifeExp       pop   gdpPercap iso_alpha  iso_num
+    country                                                                      
+    Afghanistan      Asia  1952   28.801   8425333  779.445314       AFG        4
+    Afghanistan      Asia  1957   30.332   9240934  820.853030       AFG        4
+    Afghanistan      Asia  1962   31.997  10267083  853.100710       AFG        4
+    Afghanistan      Asia  1967   34.020  11537966  836.197138       AFG        4
+    Afghanistan      Asia  1972   36.088  13079460  739.981106       AFG        4
+    ...               ...   ...      ...       ...         ...       ...      ...
+    Zimbabwe       Africa  1987   62.351   9216418  706.157306       ZWE      716
+    Zimbabwe       Africa  1992   60.377  10704340  693.420786       ZWE      716
+    Zimbabwe       Africa  1997   46.809  11404948  792.449960       ZWE      716
+    Zimbabwe       Africa  2002   39.989  11926563  672.038623       ZWE      716
+    Zimbabwe       Africa  2007   43.487  12311143  469.709298       ZWE      716
+
+    [1704 rows x 7 columns]
+        index      country continent  year  lifeExp       pop   gdpPercap iso_alpha  iso_num
+    0         0  Afghanistan      Asia  1952   28.801   8425333  779.445314       AFG        4
+    1         1  Afghanistan      Asia  1957   30.332   9240934  820.853030       AFG        4
+    2         2  Afghanistan      Asia  1962   31.997  10267083  853.100710       AFG        4
+    3         3  Afghanistan      Asia  1967   34.020  11537966  836.197138       AFG        4
+    4         4  Afghanistan      Asia  1972   36.088  13079460  739.981106       AFG        4
+    ...     ...          ...       ...   ...      ...       ...         ...       ...      ...
+    1699   1699     Zimbabwe    Africa  1987   62.351   9216418  706.157306       ZWE      716
+    1700   1700     Zimbabwe    Africa  1992   60.377  10704340  693.420786       ZWE      716
+    1701   1701     Zimbabwe    Africa  1997   46.809  11404948  792.449960       ZWE      716
+    1702   1702     Zimbabwe    Africa  2002   39.989  11926563  672.038623       ZWE      716
+    1703   1703     Zimbabwe    Africa  2007   43.487  12311143  469.709298       ZWE      716
+
+    [1704 rows x 9 columns]
+    ```
+
+    ※インデックスをリセットする場合は、`df.reset_index()`を使用する
+
 
