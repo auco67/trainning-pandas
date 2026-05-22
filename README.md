@@ -3,6 +3,7 @@
 - Pythonのデータ可視化ライブラリであるPlotly（プロットリー）を用いてデータ抽出を行う
 
 ## 目次
+1. [使用するパッケージ](#00)
 1. [使用するデータ](#01)
 1. [データ型](#02)
 1. [型変換](#03)
@@ -23,17 +24,33 @@
 1. [ファイル読み込み](#18)
 1. [merge](#19)
 1. [concat](#20)
+1. [可視化](#21)
+
+<a id="00"></a>
+
+## 使用するパッケージ
+
+- `pandas`をインストールする
+
+    ```
+    pip install pandas
+    ```
+
+- `plotly`をインストールする
+
+    ```
+    pip install plotly
+    ```
 
 <a id="01"></a>
 
 ## 使用するデータ
 
-使用するデータは、Plotlyに最初から用意されている練習・デモ用の有名なデータセットgapminderを利用する
+使用するデータは、`plotly`に最初から用意されている練習・デモ用の有名なデータセット`gapminder`を利用する
 
 main.py
 ```
 import pandas as pd
-import numpy as np
 import plotly.express as px
 
 def main():
@@ -71,7 +88,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -99,7 +115,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -134,12 +149,10 @@ if __name__ == "__main__":
 
 ### 型変換
 
-- `df[column_name].astype(type)`：`year`の`int`を`str`に変換する
-
+- `df[column_name].astype(str)`：`int`型のカラムを`str`型に変換する
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -167,6 +180,147 @@ if __name__ == "__main__":
     Name: year, Length: 1704, dtype: str
     ```
 
+- `df[column_name].astype("datetime64[us]")`：`str`型のカラムを`datetime`型に変換する
+    main.py
+    ```
+    import pandas as pd
+
+    def main():
+        file_path = "./dataset/citibike_trips_2017_sampled.csv"
+        df_csv = pd.read_csv(file_path, sep=",",usecols=[2,3])
+        print(df_csv)
+        print(df_csv.info())
+        df_csv["starttime"] = df_csv["starttime"].astype("datetime64[us]")
+        df_csv["stoptime"] = df_csv["stoptime"].astype("datetime64[us]")
+        print(df_csv)
+        print(df_csv.info())
+
+    if __name__ == "__main__":
+        main()
+    ```
+
+    `main.py`実行結果
+    ```
+                  starttime         stoptime
+    0        2017/4/3 16:51   2017/4/3 17:22
+    1        2017/4/11 8:26   2017/4/11 8:31
+    2       2017/4/15 16:12  2017/4/15 16:56
+    3       2017/7/10 15:28  2017/7/10 15:53
+    4       2017/8/22 10:13  2017/8/22 10:23
+    ...                 ...              ...
+    141557  2017/7/17 21:38  2017/7/17 22:03
+    141558  2017/5/18 16:35  2017/5/18 16:39
+    141559    2017/7/6 6:47    2017/7/6 7:06
+    141560   2017/5/17 8:13   2017/5/17 8:29
+    141561   2017/7/9 17:19   2017/7/9 17:42
+
+    [141562 rows x 2 columns]
+    <class 'pandas.DataFrame'>
+    RangeIndex: 141562 entries, 0 to 141561
+    Data columns (total 2 columns):
+    #   Column     Non-Null Count   Dtype
+    ---  ------     --------------   -----
+    0   starttime  141562 non-null  str  
+    1   stoptime   141562 non-null  str  
+    dtypes: str(2)
+    memory usage: 2.2 MB
+    None
+                    starttime            stoptime
+    0      2017-04-03 16:51:00 2017-04-03 17:22:00
+    1      2017-04-11 08:26:00 2017-04-11 08:31:00
+    2      2017-04-15 16:12:00 2017-04-15 16:56:00
+    3      2017-07-10 15:28:00 2017-07-10 15:53:00
+    4      2017-08-22 10:13:00 2017-08-22 10:23:00
+    ...                    ...                 ...
+    141557 2017-07-17 21:38:00 2017-07-17 22:03:00
+    141558 2017-05-18 16:35:00 2017-05-18 16:39:00
+    141559 2017-07-06 06:47:00 2017-07-06 07:06:00
+    141560 2017-05-17 08:13:00 2017-05-17 08:29:00
+    141561 2017-07-09 17:19:00 2017-07-09 17:42:00
+
+    [141562 rows x 2 columns]
+    <class 'pandas.DataFrame'>
+    RangeIndex: 141562 entries, 0 to 141561
+    Data columns (total 2 columns):
+    #   Column     Non-Null Count   Dtype         
+    ---  ------     --------------   -----         
+    0   starttime  141562 non-null  datetime64[us]
+    1   stoptime   141562 non-null  datetime64[us]
+    dtypes: datetime64[us](2)
+    memory usage: 2.2 MB
+    ```
+
+- `pd.to_datetime(df[column_name])`：`str`型のカラムを`datatime`型に変換する
+
+    main.py
+    ```
+    import pandas as pd
+
+    def main():
+        file_path = "./dataset/citibike_trips_2017_sampled.csv"
+        df_csv = pd.read_csv(file_path, sep=",",usecols=[2,3])
+        print(df_csv)
+        print(df_csv.info())
+        df_csv["starttime"] = pd.to_datetime(df_csv["starttime"])
+        df_csv["stoptime"] = pd.to_datetime(df_csv["stoptime"])
+        print(df_csv)
+        print(df_csv.info())
+
+    if __name__ == "__main__":
+        main()
+    ```
+
+    `main.py`実行結果
+    ```
+                  starttime         stoptime
+    0        2017/4/3 16:51   2017/4/3 17:22
+    1        2017/4/11 8:26   2017/4/11 8:31
+    2       2017/4/15 16:12  2017/4/15 16:56
+    3       2017/7/10 15:28  2017/7/10 15:53
+    4       2017/8/22 10:13  2017/8/22 10:23
+    ...                 ...              ...
+    141557  2017/7/17 21:38  2017/7/17 22:03
+    141558  2017/5/18 16:35  2017/5/18 16:39
+    141559    2017/7/6 6:47    2017/7/6 7:06
+    141560   2017/5/17 8:13   2017/5/17 8:29
+    141561   2017/7/9 17:19   2017/7/9 17:42
+
+    [141562 rows x 2 columns]
+    <class 'pandas.DataFrame'>
+    RangeIndex: 141562 entries, 0 to 141561
+    Data columns (total 2 columns):
+    #   Column     Non-Null Count   Dtype
+    ---  ------     --------------   -----
+    0   starttime  141562 non-null  str  
+    1   stoptime   141562 non-null  str  
+    dtypes: str(2)
+    memory usage: 2.2 MB
+    None
+                    starttime            stoptime
+    0      2017-04-03 16:51:00 2017-04-03 17:22:00
+    1      2017-04-11 08:26:00 2017-04-11 08:31:00
+    2      2017-04-15 16:12:00 2017-04-15 16:56:00
+    3      2017-07-10 15:28:00 2017-07-10 15:53:00
+    4      2017-08-22 10:13:00 2017-08-22 10:23:00
+    ...                    ...                 ...
+    141557 2017-07-17 21:38:00 2017-07-17 22:03:00
+    141558 2017-05-18 16:35:00 2017-05-18 16:39:00
+    141559 2017-07-06 06:47:00 2017-07-06 07:06:00
+    141560 2017-05-17 08:13:00 2017-05-17 08:29:00
+    141561 2017-07-09 17:19:00 2017-07-09 17:42:00
+
+    [141562 rows x 2 columns]
+    <class 'pandas.DataFrame'>
+    RangeIndex: 141562 entries, 0 to 141561
+    Data columns (total 2 columns):
+    #   Column     Non-Null Count   Dtype         
+    ---  ------     --------------   -----         
+    0   starttime  141562 non-null  datetime64[us]
+    1   stoptime   141562 non-null  datetime64[us]
+    dtypes: datetime64[us](2)
+    memory usage: 2.2 MB
+    ```
+
 <a id="04"></a>
 
 ### 列の抽出
@@ -176,7 +330,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -208,7 +361,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -224,7 +376,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -260,7 +411,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -294,7 +444,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -327,7 +476,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -360,7 +508,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -395,7 +542,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -426,7 +572,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -452,7 +597,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -478,7 +622,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -499,7 +642,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -522,7 +664,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -559,7 +700,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -595,7 +735,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -616,7 +755,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -649,7 +787,6 @@ if __name__ == "__main__":
 main.py
 ```
 import pandas as pd
-import numpy as np
 import plotly.express as px
 
 def main():
@@ -688,7 +825,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -697,7 +833,6 @@ if __name__ == "__main__":
         df_copy["flag"] = False
         print(df_copy.head())
         print(df_copy.dtypes)
-
 
     if __name__ == "__main__":
         main()
@@ -728,7 +863,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -764,7 +898,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -792,7 +925,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -832,13 +964,11 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
         df = px.data.gapminder()
         print(df["country"].unique())
-
 
     if __name__ == "__main__":
         main()
@@ -864,13 +994,11 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
         df = px.data.gapminder()
         print(df["country"].nunique())
-
 
     if __name__ == "__main__":
         main()
@@ -886,13 +1014,11 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
         df = px.data.gapminder()
         print(df["continent"].value_counts())
-
 
     if __name__ == "__main__":
         main()
@@ -914,7 +1040,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -948,7 +1073,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -988,7 +1112,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -1020,7 +1143,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -1041,7 +1163,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -1062,7 +1183,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -1083,7 +1203,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -1104,7 +1223,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -1125,7 +1243,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -1150,7 +1267,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -1184,7 +1300,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -1218,7 +1333,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -1253,7 +1367,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -1292,7 +1405,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -1332,7 +1444,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -1381,7 +1492,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -1440,7 +1550,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -1448,6 +1557,7 @@ if __name__ == "__main__":
         df.loc[1704,:] = pd.NA
         print(df)
         print(df.dropna())
+
     if __name__ == "__main__":
         main()
     ```
@@ -1495,7 +1605,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -1503,6 +1612,7 @@ if __name__ == "__main__":
         df.loc[1704,:] = df.loc[1703,:] 
         print(df)
         print(df.drop_duplicates())
+
     if __name__ == "__main__":
         main()
     ```
@@ -1550,7 +1660,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -1566,6 +1675,7 @@ if __name__ == "__main__":
             "iso_alpha":"3文字の国コード",
             "iso_num":"数字の国コード"
         }))
+
     if __name__ == "__main__":
         main()
     ```
@@ -1607,7 +1717,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -1615,6 +1724,7 @@ if __name__ == "__main__":
         print(df)
         print(df.set_index("country"))
         print(df.reset_index())
+
     if __name__ == "__main__":
         main()
     ```
@@ -1679,7 +1789,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def calc_median(df:pd.DataFrame)-> pd.DataFrame:
@@ -1698,6 +1807,7 @@ if __name__ == "__main__":
         df = px.data.gapminder()
         df = calc_median(df)
         print(df)
+
     if __name__ == "__main__":
         main()
     ```
@@ -1725,7 +1835,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -1733,6 +1842,7 @@ if __name__ == "__main__":
         pop_median = df["pop"].median()
         df["pop_median_status"] = df["pop"].apply(lambda x: 'greater' if x >= pop_median else 'smaller')
         print(df)
+
     if __name__ == "__main__":
         main()
     ```
@@ -1764,13 +1874,13 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
         df = px.data.gapminder()
         continent_grp = df.groupby("continent")
         print(continent_grp.get_group("Asia"))
+
     if __name__ == "__main__":
         main()
     ```
@@ -1798,13 +1908,13 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
         df = px.data.gapminder()
         continent_grp = df.groupby("continent")
         print(continent_grp["pop"].median().reset_index())
+
     if __name__ == "__main__":
         main()
     ```
@@ -1824,13 +1934,13 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
         df = px.data.gapminder()
         continent_grp = df.groupby("continent")
         print(continent_grp[["pop", "gdpPercap"]].agg({"pop":"median","gdpPercap":"mean"}).reset_index())
+
     if __name__ == "__main__":
         main()
     ```
@@ -1856,12 +1966,12 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
         df = px.data.gapminder()
         print(pd.pivot_table(df, index=["year"], columns=["continent"], values=["pop"], aggfunc="mean"))
+    
     if __name__ == "__main__":
         main()
     ```
@@ -1890,13 +2000,13 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
         df = px.data.gapminder()
         pop_pivot = pd.pivot_table(df, index=["year"], columns=["continent"], values=["pop"], aggfunc="mean")
         print(pop_pivot.divide(pop_pivot.sum(axis=1), axis=0) * 100)
+    
     if __name__ == "__main__":
         main()
     ```
@@ -1929,8 +2039,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
-    import plotly.express as px
 
     def main():
         file_path = "./dataset/countries_codes_and_coordinates.csv"
@@ -1938,6 +2046,7 @@ if __name__ == "__main__":
         for col in df.columns:
             df[col] = df[col].apply(lambda x: x.strip()[1:-1])
         print(df)
+    
     if __name__ == "__main__":
         main()
     ```
@@ -1971,7 +2080,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -2015,7 +2123,6 @@ if __name__ == "__main__":
     main.py
     ```
     import pandas as pd
-    import numpy as np
     import plotly.express as px
 
     def main():
@@ -2045,3 +2152,165 @@ if __name__ == "__main__":
 
     [200 rows x 8 columns]
     ```
+
+<a id="21"></a>
+
+## 可視化
+
+`dataset/sales_transactions.xlsx`のデータを、日次毎の売り上げを可視化する
+
+1. 可視化するために、`matplotlib`をインストールする
+
+    ```
+    pip install matplotlib
+    ```
+
+2. 可視化するためのデータを読み込む
+
+    main.py
+    ```
+    import openpyxl
+    import pandas as pd
+
+    def main():
+        file_path = "./dataset/sales_transactions.xlsx"
+        df_xls = pd.read_excel(file_path,"Sheet1", index_col=0)
+        print(df_xls)
+        print(df_xls.info())
+
+    if __name__ == "__main__":
+        main()
+    ```
+
+    `main.py`実行結果
+    ```
+               ymd       transaction_id  SKU  transaction_type  payment  details  revenue  quantity  product_name
+    0   2020-01-07  250-0042069-0262213   60                 0        1        4     -314       NaN            21
+    1   2020-01-07  250-0042069-0262213   60                 0        1        8     -499       NaN            21
+    2   2020-01-07  250-0042069-0262213   60                 0        1       10     -693       NaN            21
+    3   2020-01-07  250-0042069-0262213   60                 0        4        0     5727       1.0            21
+    4   2020-01-07  250-0042069-0262213   60                 0        2        2       29       NaN            21
+    ..         ...                  ...  ...               ...      ...      ...      ...       ...           ...
+    609 2019-11-20  503-0100465-6209437    2                 0        3       14     -373       NaN            60
+    610 2019-11-20  503-0100465-6209437    2                 0        4        0      682       1.0            60
+    611 2019-11-20  503-0100465-6209437    2                 0        2        9       68       NaN            60
+    612 2019-11-20  503-0100465-6209437    2                 0        2       12       37       NaN            60
+    613 2019-11-20  503-0100465-6209437    2                 0        2       14      373       NaN            60
+
+    [597 rows x 9 columns]
+    <class 'pandas.DataFrame'>
+    Index: 597 entries, 0 to 613
+    Data columns (total 9 columns):
+    #   Column            Non-Null Count  Dtype         
+    ---  ------            --------------  -----         
+    0   ymd               597 non-null    datetime64[us]
+    1   transaction_id    597 non-null    str           
+    2   SKU               597 non-null    int64         
+    3   transaction_type  597 non-null    int64         
+    4   payment           597 non-null    int64         
+    5   details           597 non-null    int64         
+    6   revenue           597 non-null    int64         
+    7   quantity          144 non-null    float64       
+    8   product_name      597 non-null    int64         
+    dtypes: datetime64[us](1), float64(1), int64(6), str(1)
+    memory usage: 46.6 KB
+    None
+    ```
+
+3. データを日次毎の売り上げとして集計しやすいように整える
+
+    - `quantity`の`NaN`を`1`に変換する
+    - `revenue`を`quantity`で乗算し`sale`カラムを新設する
+    - `pd.groupby`で、`ymd`でグルーピングし、`sale`の合計値を集計する
+
+    main.py
+    ```
+    import openpyxl
+    import pandas as pd
+
+    def main():
+        file_path = "./dataset/sales_transactions.xlsx"
+        df_xls = pd.read_excel(file_path,"Sheet1", index_col=0)
+        df_xls["quantity"] = df_xls["quantity"].fillna(1)
+        df_xls["sale"] = df_xls["revenue"] * df_xls["quantity"]
+        df_daily_sales = df_xls.groupby("ymd")["sale"].sum().reset_index()
+        print(df_daily_sales)
+
+    if __name__ == "__main__":
+        main()
+    ```
+
+    `main.py`実行結果
+    ```
+              ymd     sale
+    0  2019-11-20   3128.0
+    1  2019-11-21   2516.0
+    2  2019-11-23    928.0
+    3  2019-11-24   1491.0
+    4  2019-11-26   1095.0
+    5  2019-11-28   1555.0
+    6  2019-11-30   1105.0
+    7  2019-12-03   6661.0
+    8  2019-12-07   6525.0
+    9  2019-12-09    302.0
+    10 2019-12-11   5772.0
+    11 2019-12-12  11462.0
+    12 2019-12-13  28638.0
+    13 2019-12-14  15581.0
+    14 2019-12-15   8176.0
+    15 2019-12-16  29219.0
+    16 2019-12-18   7763.0
+    17 2019-12-19  18175.0
+    18 2019-12-20  75777.0
+    19 2019-12-21  25522.0
+    20 2019-12-22   7517.0
+    21 2019-12-23   7685.0
+    22 2019-12-24  22415.0
+    23 2019-12-25   8685.0
+    24 2019-12-26  27369.0
+    25 2019-12-27   5416.0
+    26 2019-12-28  31863.0
+    27 2019-12-29   -858.0
+    28 2019-12-30   6954.0
+    29 2019-12-31   9197.0
+    30 2020-01-02   3690.0
+    31 2020-01-03  14864.0
+    32 2020-01-04  15100.0
+    33 2020-01-05  11326.0
+    34 2020-01-06  22666.0
+    35 2020-01-07   5108.0
+    ```
+
+4. `matplotlib.pyplot`を使用して、日次毎の売り上げを折れ線グラフで可視化する
+
+    - `plt.plot(x, y)`：可視化するデータのX軸とY軸を指定する
+    - `plt.title(title_name)`：グラフのタイトルを設定する
+    - `plt.xlabel(x_label_name)`：X軸のラベルを設定する
+    - `plt.ylabel(y_label_name)`：Y軸のラベルを設定する
+    - `plt.show()`：折れ線グラフで可視化する
+
+    main.py
+    ```
+    import openpyxl
+    import pandas as pd
+    import matplotlib.pyplot as plt
+
+    def main():
+        file_path = "./dataset/sales_transactions.xlsx"
+        df_xls = pd.read_excel(file_path,"Sheet1", index_col=0)
+        df_xls["quantity"] = df_xls["quantity"].fillna(1)
+        df_xls["sale"] = df_xls["revenue"] * df_xls["quantity"]
+        df_daily_sales = df_xls.groupby("ymd")["sale"].sum().reset_index()
+        plt.plot(df_daily_sales["ymd"], df_daily_sales["sale"])
+        plt.title("Daily Sales")
+        plt.xlabel("Date")
+        plt.ylabel("Sales")
+        plt.show()
+
+    if __name__ == "__main__":
+        main()
+    ```
+
+    `main.py`実行結果
+    
+    ![image](imgs/df_daily_sales_graph.png)
