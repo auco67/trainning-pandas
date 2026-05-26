@@ -16,10 +16,10 @@
 1. [欠損値の確認](#12)
 1. [欠損値の補完](#13)
 1. [欠損値の削除](#14)
-1. [](#15)
-1. [](#16)
-1. [](#17)
-1. [](#18)
+1. [ユニークな値と出現回数](#15)
+1. [グループ毎の集計](#16)
+1. [統計量の確認](#17)
+1. [折れ線グラフの表示](#18)
 1. [](#19)
 1. [](#20)
 
@@ -813,51 +813,315 @@ dtype: int64
 
 <a id="15"></a>
 
-### 15.
+### 15. ユニークな値と出現回数
+
+`iris.csv`を読み込み`df_iris`として定義し`df_iris`のClassカラムにおいてユニークな値とその出現回数を確認する
 
 exercises/main.py
 ```
+import pandas as pd
+
+def main():
+    csv_file = "./datas/iris.csv"
+    df = pd.read_csv(csv_file, sep=",")
+    print(df)
+    print(df["Class"].unique())
+    print(df["Class"].value_counts())
+
+if __name__ == "__main__":
+    main()
 ```
 
 `main.py`実行結果
 ```
+     sepal-length  sepal-width  petal-length  petal-width            Class
+0             5.1          3.5           1.4          0.2      Iris-setosa
+1             4.9          3.0           1.4          0.2      Iris-setosa
+2             4.7          3.2           1.3          0.2      Iris-setosa
+3             4.6          3.1           1.5          0.2      Iris-setosa
+4             5.0          3.6           1.4          0.2      Iris-setosa
+..            ...          ...           ...          ...              ...
+151          12.5          3.1           5.1          1.8   Iris-virginica
+152          13.4          2.7           5.1          1.8   Iris-virginica
+153          13.2          3.2           5.1          1.8  Iris-versicolor
+154          15.2          2.3           5.1          1.8  Iris-versicolor
+155          14.2          2.4           5.1          1.8  Iris-versicolor
+
+[156 rows x 5 columns]
+<StringArray>
+['Iris-setosa', 'Iris-versicolor', 'Iris-virginica']
+Length: 3, dtype: str
+Class
+Iris-versicolor    53
+Iris-virginica     53
+Iris-setosa        50
+Name: count, dtype: int64
 ```
+
+#### 解説
+
+- `df[column_name].unique()`：ユニークな値を確認する
+- `df[column_name].value_counts()`：出現回数を確認する
 
 <a id="16"></a>
 
-### 16.
+### 16. グループ毎の集計
+
+`df_iris`の下記各クラスにおける`sepal-length`、`sepal-width`、`patal-length`、`patal-width`の平均値を求める
+
+- `Iris-setosa`
+- `Iris-versicolor`
+- `Iris-virginca`
 
 exercises/main.py
 ```
+import pandas as pd
+
+def main():
+    csv_file = "./datas/iris.csv"
+    df = pd.read_csv(csv_file, sep=",")
+    print(df)
+    print(df.groupby(["Class"]).mean())
+
+if __name__ == "__main__":
+    main()
 ```
 
 `main.py`実行結果
 ```
+     sepal-length  sepal-width  petal-length  petal-width            Class
+0             5.1          3.5           1.4          0.2      Iris-setosa
+1             4.9          3.0           1.4          0.2      Iris-setosa
+2             4.7          3.2           1.3          0.2      Iris-setosa
+3             4.6          3.1           1.5          0.2      Iris-setosa
+4             5.0          3.6           1.4          0.2      Iris-setosa
+..            ...          ...           ...          ...              ...
+151          12.5          3.1           5.1          1.8   Iris-virginica
+152          13.4          2.7           5.1          1.8   Iris-virginica
+153          13.2          3.2           5.1          1.8  Iris-versicolor
+154          15.2          2.3           5.1          1.8  Iris-versicolor
+155          14.2          2.4           5.1          1.8  Iris-versicolor
+
+[156 rows x 5 columns]
+                 sepal-length  sepal-width  petal-length  petal-width
+Class                                                                
+Iris-setosa          5.004255     3.434000      1.454000     0.244000
+Iris-versicolor      6.403774     2.762264      4.307547     1.352830
+Iris-virginica       6.937736     2.979245      5.526415     2.013208
 ```
+
+#### 解説
+
+- `df.groupby(column_name)`：DataFrameをカラム名で集計する
+- `df.groupby(column_name).mean()`：特定のカラムの値毎に集計後、他カラムの値の平均値を算出する
 
 <a id="17"></a>
 
-### 17.
+### 17. 統計量の確認
+
+`df_iris`の各カラムにおける下記統計量を算出する
+- 平均値
+- 最大値
+- 最小値
+- 中央値
+- 標準偏差
 
 exercises/main.py
 ```
+import pandas as pd
+
+def main():
+    csv_file = "./datas/iris.csv"
+    df = pd.read_csv(csv_file, sep=",")
+    print(df)
+    print(f"平均値\n{df.groupby(["Class"]).mean()}")
+    print(f"最大値\n{df.groupby(["Class"]).max()}")
+    print(f"最小値\n{df.groupby(["Class"]).min()}")
+    print(f"中央値\n{df.groupby(["Class"]).median()}")
+    print(f"標準偏差\n{df.groupby(["Class"]).std()}")
+
+if __name__ == "__main__":
+    main()
 ```
 
 `main.py`実行結果
 ```
+     sepal-length  sepal-width  petal-length  petal-width            Class
+0             5.1          3.5           1.4          0.2      Iris-setosa
+1             4.9          3.0           1.4          0.2      Iris-setosa
+2             4.7          3.2           1.3          0.2      Iris-setosa
+3             4.6          3.1           1.5          0.2      Iris-setosa
+4             5.0          3.6           1.4          0.2      Iris-setosa
+..            ...          ...           ...          ...              ...
+151          12.5          3.1           5.1          1.8   Iris-virginica
+152          13.4          2.7           5.1          1.8   Iris-virginica
+153          13.2          3.2           5.1          1.8  Iris-versicolor
+154          15.2          2.3           5.1          1.8  Iris-versicolor
+155          14.2          2.4           5.1          1.8  Iris-versicolor
+
+[156 rows x 5 columns]
+平均値
+                 sepal-length  sepal-width  petal-length  petal-width
+Class                                                                
+Iris-setosa          5.004255     3.434000      1.454000     0.244000
+Iris-versicolor      6.403774     2.762264      4.307547     1.352830
+Iris-virginica       6.937736     2.979245      5.526415     2.013208
+最大値
+                 sepal-length  sepal-width  petal-length  petal-width
+Class                                                                
+Iris-setosa               5.8          4.4           1.9          0.6
+Iris-versicolor          15.2          3.4           5.1          1.8
+Iris-virginica           13.4          3.8           6.9          2.5
+最小値
+                 sepal-length  sepal-width  petal-length  petal-width
+Class                                                                
+Iris-setosa               4.3          2.3           1.0          0.1
+Iris-versicolor           4.9          2.0           3.0          1.0
+Iris-virginica            4.9          2.2           4.5          1.4
+中央値
+                 sepal-length  sepal-width  petal-length  petal-width
+Class                                                                
+Iris-setosa               5.0          3.4           1.5          0.2
+Iris-versicolor           6.0          2.8           4.4          1.3
+Iris-virginica            6.5          3.0           5.5          2.0
+標準偏差
+                 sepal-length  sepal-width  petal-length  petal-width
+Class                                                                
+Iris-setosa          0.353835     0.377213      0.182063     0.107210
+Iris-versicolor      2.001630     0.321192      0.496468     0.221536
+Iris-virginica       1.571773     0.321271      0.546017     0.271773
 ```
 
+#### 解説
+
+- `df.describe()`：カラム毎に表形式で統計量等を出力する
+
+    ```
+    print(f"統計量等\n{df.describe()}")
+    ```
+
+    ```
+    統計量等
+           sepal-length  sepal-width  petal-length  petal-width
+    count    153.000000   156.000000    156.000000   156.000000
+    mean       6.158824     3.051282      3.807051     1.221795
+    std        1.702457     0.437955      1.753783     0.757185
+    min        4.300000     2.000000      1.000000     0.100000
+    25%        5.100000     2.800000      1.600000     0.300000
+    50%        5.800000     3.000000      4.400000     1.350000
+    75%        6.500000     3.325000      5.100000     1.800000
+    max       15.200000     4.400000      6.900000     2.500000
+    ```
 <a id="18"></a>
 
-### 18.
+### 18. 折れ線グラフの表示
+
+`df`の先頭50日間における平均気温、最高気温、最低気温を折れ線グラフで可視化する
 
 exercises/main.py
 ```
+import pandas as pd
+import matplotlib.pyplot as plt
+
+def main():
+    csv_file = "./datas/weather.csv"
+    df = pd.read_csv(csv_file, sep=",")
+    df = df[['年月日', '平均気温(℃)', '最高気温(℃)','最低気温(℃)']][1:51]
+    print(df)
+    plt.plot(df["年月日"], df['平均気温(℃)'], label="average")
+    plt.plot(df["年月日"], df['最高気温(℃)'], label="maximum")
+    plt.plot(df["年月日"], df['最低気温(℃)'], label="lowest")
+    plt.title("50 days")
+    plt.xlabel("date")
+    plt.ylabel("temp(℃)")
+    plt.xticks(range(0,len(df),5),df["年月日"][::5])
+    plt.tight_layout()
+    plt.legend()
+    plt.show()
+
+if __name__ == "__main__":
+    main()
 ```
 
 `main.py`実行結果
 ```
+           年月日  平均気温(℃)  最高気温(℃)  最低気温(℃)
+1   2019/12/14      9.3     15.9      3.2
+2   2019/12/15      7.8     11.1      4.0
+3   2019/12/16      6.9     12.5      1.3
+4   2019/12/17      8.2     10.3      5.7
+5   2019/12/18      9.9     15.0      4.8
+6   2019/12/19      8.6      9.7      7.9
+7   2019/12/20     10.1     15.8      5.7
+8   2019/12/21      7.4      8.4      6.5
+9   2019/12/22      6.5      9.8      4.2
+10  2019/12/23      6.7     12.1      3.6
+11  2019/12/24      7.5     12.1      4.1
+12  2019/12/25      5.3      7.9      2.5
+13  2019/12/26      7.5     12.2      3.1
+14  2019/12/27      8.4     14.6      2.5
+15  2019/12/28      6.5     10.1      2.5
+16  2019/12/29      6.7     11.2      2.1
+17  2019/12/30      5.9      7.1      4.8
+18  2019/12/31      8.7     18.8      4.1
+19    2020/1/1      4.9      9.4      2.1
+20    2020/1/2      5.4     10.4     -0.7
+21    2020/1/3      5.8     12.6      0.5
+22    2020/1/4      5.9     11.4      0.7
+23    2020/1/5      5.0      9.6      0.7
+24    2020/1/6      5.7     11.9     -1.1
+25    2020/1/7      5.3      8.2      2.8
+26    2020/1/8      5.1      7.1      3.5
+27    2020/1/9     10.8     14.5      5.7
+28   2020/1/10      6.9     11.0      3.2
+29   2020/1/11      6.0     10.7      3.5
+30   2020/1/12      5.7      8.6      1.8
+31   2020/1/13      7.9     12.9      3.2
+32   2020/1/14      8.2     13.0      3.8
+33   2020/1/15      6.9      8.8      5.0
+34   2020/1/16      6.3      9.9      2.3
+35   2020/1/17      6.7     10.1      4.1
+36   2020/1/18      3.8      6.2      0.9
+37   2020/1/19      6.2      9.8      0.6
+38   2020/1/20      7.1     13.6      1.5
+39   2020/1/21      6.2     10.0      3.4
+40   2020/1/22      4.0      6.2      1.4
+41   2020/1/23      5.5      7.4      4.0
+42   2020/1/24      9.9     13.8      6.6
+43   2020/1/25      7.2      9.6      4.6
+44   2020/1/26      4.6      7.0      1.7
+45   2020/1/27      4.7      6.8      3.1
+46   2020/1/28      5.1      9.3      1.4
+47   2020/1/29     12.3     17.1      7.5
+48   2020/1/30     11.3     15.7      5.6
+49   2020/1/31      8.0     10.8      4.6
+50    2020/2/1      6.7     12.3      0.6
 ```
+
+![image](../imgs/exercises/50days.png)
+
+#### 解説
+
+1. 先頭50日間における平均気温、最高気温、最低気温のデータを用意する
+
+    ```
+    df = df[['年月日', '平均気温(℃)', '最高気温(℃)','最低気温(℃)']][1:51]
+    ```
+
+2. 折れ線グラフの設定
+    - `plt.plot(x, y, label_name)`：可視化するデータのX軸とY軸を指定する
+    - `plt.title(title_name)`：グラフのタイトルを設定する
+    - `plt.xlabel(x_label_name)`：X軸のラベルを設定する
+    - `plt.ylabel(y_label_name)`：Y軸のラベルを設定する
+    - `plt.xticks()`：X軸の目盛り（ティック）と、そのラベルを設定する
+        - 最初の引数：目盛りを表示する位置
+            `range(0, len(df), 5)`：5つおきの位置を指定
+        - 2番目の引数：その位置に対応するラベル
+            `df["年月日"][::5]`：5つおきのラベルを指定
+    - `plt.tight_layout()`：ラベルや軸の文字が重ならないように自動で余白を詰める
+    - `plt.legend()`：凡例ラベルを付ける
+    - `plt.show()`：折れ線グラフで可視化する
+
 
 <a id="19"></a>
 
